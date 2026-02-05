@@ -2,159 +2,203 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>For Pratiksha 💖</title>
+<title>Valentine Surprise 💖</title>
 
 <style>
 *{box-sizing:border-box}
-
 body{
   margin:0;
   height:100vh;
+  overflow:hidden;
   display:flex;
   justify-content:center;
   align-items:center;
   background:linear-gradient(135deg,#ff758c,#ff7eb3);
-  font-family: 'Arial', sans-serif;
-  overflow:hidden;
+  font-family:Arial, sans-serif;
 }
 
-/* CARD */
+/* Hearts (start screen) */
+.heart{
+  position:fixed;
+  bottom:-20px;
+  font-size:22px;
+  animation:float 6s linear infinite;
+  opacity:.8;
+}
+@keyframes float{
+  to{transform:translateY(-110vh);opacity:0}
+}
+
+/* Card */
 .card{
-  background:white;
+  background:#fff;
   width:360px;
-  padding:30px 20px 80px;
-  border-radius:20px;
+  padding:30px 20px 90px;
+  border-radius:22px;
   text-align:center;
-  position:relative;
   z-index:2;
 }
+h1{margin-bottom:25px}
 
-h1{
-  margin:0 0 20px;
-}
-
-/* BUTTON WRAPPER */
+/* Buttons */
 .btns{
   display:flex;
-  justify-content:space-around;
-  margin-top:30px;
+  justify-content:center;
+  gap:40px;
   position:relative;
 }
-
 button{
   padding:12px 26px;
   font-size:16px;
   border:none;
-  border-radius:12px;
+  border-radius:14px;
   cursor:pointer;
 }
-
-#yes{
-  background:#ff4d6d;
-  color:white;
-}
-
+#yes{background:#ff4d6d;color:#fff}
 #no{
-  background:#aaa;
-  color:white;
-  position:absolute;
-  right:0;
+  background:#aaa;color:#fff;
+  position:absolute;right:0
 }
 
-/* YES SCREEN */
-#yesScreen{
+/* Loader */
+#loader, #yesScreen{
   display:none;
   position:fixed;
   inset:0;
   background:linear-gradient(135deg,#ff4d6d,#ff8fab);
-  color:white;
-  z-index:5;
+  color:#fff;
+  z-index:10;
   text-align:center;
-  padding-top:20vh;
+  padding-top:30vh;
 }
 
-#yesScreen h1{
-  font-size:40px;
-}
+/* Yes Screen */
+#yesScreen h1{font-size:42px}
+#yesScreen p{font-size:22px}
 
-#yesScreen p{
-  font-size:20px;
-}
-
-/* CONFETTI HEARTS */
-.heart{
+/* Confetti */
+.confetti{
   position:fixed;
   top:-10px;
-  font-size:24px;
-  animation:fall 5s linear infinite;
+  font-size:26px;
+  animation:fall 4s linear infinite;
+}
+@keyframes fall{
+  to{transform:translateY(110vh);opacity:0}
 }
 
-@keyframes fall{
-  to{
-    transform:translateY(110vh);
-    opacity:0;
-  }
+/* Watermark */
+.watermark{
+  position:fixed;
+  bottom:10px;
+  right:12px;
+  font-size:12px;
+  opacity:.6;
 }
 </style>
 </head>
 
 <body>
 
-<!-- MAIN CARD -->
-<div class="card" id="card">
-  <h1>Pratiksha 💖<br>Will you be my Valentine?</h1>
+<audio id="sound">
+  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_8b5e7c1f73.mp3">
+</audio>
 
+<!-- MAIN -->
+<div class="card" id="card">
+  <h1 id="question"></h1>
   <div class="btns">
     <button id="yes">Yes ❤️</button>
     <button id="no">No ❌</button>
   </div>
 </div>
 
-<!-- YES FULL PAGE -->
-<div id="yesScreen">
-  <h1>💥 SHE SAID YES 💥</h1>
-  <p>
-    WOW 😭🔥<br><br>
-    Mission Successful 💘<br>
-    Pratiksha is officially my Valentine 🥰
-  </p>
+<!-- LOADER -->
+<div id="loader">
+  <h1>Processing… 💭</h1>
+  <p>Checking heart compatibility 💘</p>
 </div>
 
+<!-- YES PAGE -->
+<div id="yesScreen">
+  <h1>💥 SHE SAID YES 💥</h1>
+  <p id="finalMsg"></p>
+  <br>
+  <button onclick="share()">Share this moment 💌</button>
+</div>
+
+<div class="watermark">made with 💖 by MDnexa</div>
+
 <script>
-const noBtn = document.getElementById("no");
-const yesBtn = document.getElementById("yes");
-const yesScreen = document.getElementById("yesScreen");
-const card = document.getElementById("card");
+const params=new URLSearchParams(window.location.search);
+const name=params.get("name")||"Pratiksha";
 
-// NO button runs away
+document.getElementById("question").innerHTML=
+`${name} 💖<br>Will you be my Valentine?`;
+
+document.getElementById("finalMsg").innerHTML=
+`WOW 😭🔥<br>Mission Successful 💘<br><br>${name} is officially my Valentine 🥰`;
+
+const noBtn=document.getElementById("no");
+const yesBtn=document.getElementById("yes");
+const card=document.getElementById("card");
+const loader=document.getElementById("loader");
+const yesScreen=document.getElementById("yesScreen");
+const sound=document.getElementById("sound");
+
+/* No escape */
 function moveNo(){
-  const x = Math.random()*200 - 100;
-  const y = Math.random()*80;
-  noBtn.style.transform = `translate(${x}px,${y}px)`;
+  noBtn.style.transform=
+`translate(${Math.random()*220-110}px,${Math.random()*80}px)`;
 }
+noBtn.onmouseover=moveNo;
+noBtn.ontouchstart=moveNo;
 
-noBtn.addEventListener("mouseover", moveNo);
-noBtn.addEventListener("touchstart", moveNo);
-
-// YES click = full takeover
-yesBtn.onclick = () => {
+/* Yes flow */
+yesBtn.onclick=()=>{
   card.style.display="none";
-  yesScreen.style.display="block";
-  startHearts();
+  loader.style.display="block";
+  setTimeout(()=>{
+    loader.style.display="none";
+    yesScreen.style.display="block";
+    sound.play();
+    confetti();
+  },2000);
 };
 
-// hearts rain
-function startHearts(){
+/* Hearts start */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerText="💖";
+  h.style.left=Math.random()*100+"vw";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},300);
+
+/* Confetti */
+function confetti(){
   setInterval(()=>{
-    const h = document.createElement("div");
-    h.className="heart";
-    h.innerText = Math.random()>0.5 ? "💖" : "🎉";
-    h.style.left = Math.random()*100 + "vw";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),5000);
-  },200);
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.innerText=Math.random()>0.5?"🎉":"💖";
+    c.style.left=Math.random()*100+"vw";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+  },180);
+}
+
+/* Share */
+function share(){
+  const text=`${name} just said YES 💖🔥`;
+  if(navigator.share){
+    navigator.share({text,url:location.href});
+  }else{
+    alert("Copy this link and share 💌");
+  }
 }
 </script>
 
 </body>
 </html>
+
