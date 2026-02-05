@@ -3,131 +3,157 @@
 <head>
 <meta charset="UTF-8">
 <title>For Pratiksha 💖</title>
+
 <style>
+*{box-sizing:border-box}
+
 body{
   margin:0;
   height:100vh;
-  overflow:hidden;
   display:flex;
   justify-content:center;
   align-items:center;
   background:linear-gradient(135deg,#ff758c,#ff7eb3);
   font-family: 'Arial', sans-serif;
+  overflow:hidden;
 }
 
-.box{
-  background:#fff;
-  padding:30px;
-  border-radius:18px;
+/* CARD */
+.card{
+  background:white;
+  width:360px;
+  padding:30px 20px 80px;
+  border-radius:20px;
   text-align:center;
-  width:330px;
   position:relative;
   z-index:2;
 }
 
-h2{
-  margin-bottom:20px;
+h1{
+  margin:0 0 20px;
+}
+
+/* BUTTON WRAPPER */
+.btns{
+  display:flex;
+  justify-content:space-around;
+  margin-top:30px;
+  position:relative;
 }
 
 button{
-  padding:10px 22px;
+  padding:12px 26px;
   font-size:16px;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   cursor:pointer;
-  position:absolute;
 }
 
 #yes{
   background:#ff4d6d;
-  color:#fff;
-  left:70px;
-  bottom:25px;
+  color:white;
 }
 
 #no{
   background:#aaa;
-  color:#fff;
-  right:70px;
-  bottom:25px;
+  color:white;
+  position:absolute;
+  right:0;
 }
 
-#msg{
+/* YES SCREEN */
+#yesScreen{
   display:none;
-  font-size:18px;
-  color:#ff4d6d;
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg,#ff4d6d,#ff8fab);
+  color:white;
+  z-index:5;
+  text-align:center;
+  padding-top:20vh;
 }
 
-/* Floating hearts */
+#yesScreen h1{
+  font-size:40px;
+}
+
+#yesScreen p{
+  font-size:20px;
+}
+
+/* CONFETTI HEARTS */
 .heart{
   position:fixed;
-  bottom:-10px;
-  font-size:20px;
-  animation: float 6s linear infinite;
+  top:-10px;
+  font-size:24px;
+  animation:fall 5s linear infinite;
 }
 
-@keyframes float{
-  from{ transform:translateY(0); opacity:1;}
-  to{ transform:translateY(-100vh); opacity:0;}
+@keyframes fall{
+  to{
+    transform:translateY(110vh);
+    opacity:0;
+  }
 }
 </style>
 </head>
+
 <body>
 
-<audio autoplay loop>
-  <source src="https://cdn.pixabay.com/audio/2022/02/23/audio_9c3b78c7c5.mp3" type="audio/mpeg">
-</audio>
+<!-- MAIN CARD -->
+<div class="card" id="card">
+  <h1>Pratiksha 💖<br>Will you be my Valentine?</h1>
 
-<div class="box">
-  <h2 id="q">Pratiksha 💖<br>Will you be my Valentine?</h2>
-
-  <div id="msg">
-    💖 Yayyy Pratiksha!  
-    <br><br>
-    You just made my heart smile 😍  
-    <br>
-    Happy Valentine’s Day 💐  
-    <br><br>
-    — Someone who adores you ❤️
+  <div class="btns">
+    <button id="yes">Yes ❤️</button>
+    <button id="no">No ❌</button>
   </div>
+</div>
 
-  <button id="yes">Yes ❤️</button>
-  <button id="no">No ❌</button>
+<!-- YES FULL PAGE -->
+<div id="yesScreen">
+  <h1>💥 SHE SAID YES 💥</h1>
+  <p>
+    WOW 😭🔥<br><br>
+    Mission Successful 💘<br>
+    Pratiksha is officially my Valentine 🥰
+  </p>
 </div>
 
 <script>
 const noBtn = document.getElementById("no");
 const yesBtn = document.getElementById("yes");
-const q = document.getElementById("q");
-const msg = document.getElementById("msg");
+const yesScreen = document.getElementById("yesScreen");
+const card = document.getElementById("card");
+
+// NO button runs away
+function moveNo(){
+  const x = Math.random()*200 - 100;
+  const y = Math.random()*80;
+  noBtn.style.transform = `translate(${x}px,${y}px)`;
+}
 
 noBtn.addEventListener("mouseover", moveNo);
 noBtn.addEventListener("touchstart", moveNo);
 
-function moveNo(){
-  const x = Math.random() * 250 - 125;
-  const y = Math.random() * 250 - 125;
-  noBtn.style.transform = `translate(${x}px,${y}px)`;
-}
-
+// YES click = full takeover
 yesBtn.onclick = () => {
-  q.style.display="none";
-  yesBtn.style.display="none";
-  noBtn.style.display="none";
-  msg.style.display="block";
+  card.style.display="none";
+  yesScreen.style.display="block";
+  startHearts();
 };
 
-// hearts animation
-setInterval(() => {
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.innerText = "💖";
-  heart.style.left = Math.random()*100 + "vw";
-  heart.style.fontSize = (Math.random()*20 + 10) + "px";
-  document.body.appendChild(heart);
-
-  setTimeout(() => heart.remove(), 6000);
-}, 300);
+// hearts rain
+function startHearts(){
+  setInterval(()=>{
+    const h = document.createElement("div");
+    h.className="heart";
+    h.innerText = Math.random()>0.5 ? "💖" : "🎉";
+    h.style.left = Math.random()*100 + "vw";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),5000);
+  },200);
+}
 </script>
 
 </body>
