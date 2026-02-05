@@ -18,15 +18,16 @@ body{
   font-family:Arial, sans-serif;
 }
 
-/* Floating hearts (first page) */
-.heart{
+/* Floating items */
+.float{
   position:fixed;
   bottom:-20px;
   font-size:22px;
-  animation:float 6s linear infinite;
-  opacity:.8;
+  animation:floatUp 6s linear infinite;
+  opacity:.85;
+  pointer-events:none;
 }
-@keyframes float{
+@keyframes floatUp{
   to{transform:translateY(-110vh);opacity:0}
 }
 
@@ -73,13 +74,10 @@ button{
 }
 
 /* Loader */
-#loader{
-  padding-top:35vh;
-}
+#loader{padding-top:35vh}
 
 /* Final page layout */
 #yesScreen{
-  display:none;
   justify-content:center;
   align-items:center;
 }
@@ -91,15 +89,8 @@ button{
   padding-top:10vh;
 }
 
-#yesScreen h1{
-  font-size:42px;
-  margin-bottom:10px;
-}
-
-#finalMsg{
-  font-size:22px;
-  margin-top:10px;
-}
+#yesScreen h1{font-size:42px}
+#finalMsg{font-size:22px;margin-top:10px}
 
 /* WOW meme */
 #wowMeme{
@@ -201,31 +192,56 @@ function moveNo(){
 noBtn.onmouseover=moveNo;
 noBtn.ontouchstart=moveNo;
 
+/* FLOATING LOGIC */
+let floatInterval;
+
+/* FIRST PAGE: ONLY HEARTS */
+function startHearts(){
+  floatInterval=setInterval(()=>{
+    const el=document.createElement("div");
+    el.className="float";
+    el.innerText=Math.random()>0.5?"❤️":"💖";
+    el.style.left=Math.random()*100+"vw";
+    el.style.fontSize=(Math.random()*12+16)+"px";
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),6000);
+  },300);
+}
+
+/* FINAL PAGE: HEARTS + FLOWERS */
+function startHeartsAndFlowers(){
+  const items=["❤️","💖","🌸","🌹","💐"];
+  setInterval(()=>{
+    const el=document.createElement("div");
+    el.className="float";
+    el.innerText=items[Math.floor(Math.random()*items.length)];
+    el.style.left=Math.random()*100+"vw";
+    el.style.fontSize=(Math.random()*14+16)+"px";
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),6000);
+  },250);
+}
+
+/* START hearts on load */
+startHearts();
+
 /* YES click flow */
 yesBtn.onclick=()=>{
   card.style.display="none";
   loader.style.display="block";
+  clearInterval(floatInterval);
 
   setTimeout(()=>{
     loader.style.display="none";
     yesScreen.style.display="flex";
     meme.style.display="block";
     sound.play();
+    startHeartsAndFlowers();
     confetti();
   },2000);
 };
 
-/* Hearts on first page */
-setInterval(()=>{
-  const h=document.createElement("div");
-  h.className="heart";
-  h.innerText="💖";
-  h.style.left=Math.random()*100+"vw";
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),6000);
-},300);
-
-/* Confetti on final page */
+/* Confetti */
 function confetti(){
   setInterval(()=>{
     const c=document.createElement("div");
@@ -250,6 +266,7 @@ function share(){
 
 </body>
 </html>
+
 
 
 
