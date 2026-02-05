@@ -17,7 +17,7 @@ body{
   font-family:Arial, sans-serif;
 }
 
-/* Hearts (start screen) */
+/* Hearts on first page */
 .heart{
   position:fixed;
   bottom:-20px;
@@ -60,7 +60,7 @@ button{
   position:absolute;right:0
 }
 
-/* Loader */
+/* Loader + Final page */
 #loader, #yesScreen{
   display:none;
   position:fixed;
@@ -69,12 +69,24 @@ button{
   color:#fff;
   z-index:10;
   text-align:center;
-  padding-top:30vh;
+  padding-top:28vh;
 }
 
-/* Yes Screen */
+/* Final text */
 #yesScreen h1{font-size:42px}
 #yesScreen p{font-size:22px}
+
+/* WOW meme animation */
+#wowMeme{
+  width:220px;
+  margin-top:25px;
+  display:none;
+  animation:wowPop 0.6s ease-out;
+}
+@keyframes wowPop{
+  from{transform:scale(0);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
 
 /* Confetti */
 .confetti{
@@ -104,7 +116,7 @@ button{
   <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_8b5e7c1f73.mp3">
 </audio>
 
-<!-- MAIN -->
+<!-- MAIN CARD -->
 <div class="card" id="card">
   <h1 id="question"></h1>
   <div class="btns">
@@ -119,10 +131,18 @@ button{
   <p>Checking heart compatibility 💘</p>
 </div>
 
-<!-- YES PAGE -->
+<!-- FINAL PAGE -->
 <div id="yesScreen">
   <h1>💥 SHE SAID YES 💥</h1>
   <p id="finalMsg"></p>
+
+  <!-- WOW MEME (ADDED) -->
+  <img
+    id="wowMeme"
+    src="https://i.imgflip.com/4/30b1gx.jpg"
+    alt="WOW Meme"
+  >
+
   <br>
   <button onclick="share()">Share this moment 💌</button>
 </div>
@@ -145,8 +165,9 @@ const card=document.getElementById("card");
 const loader=document.getElementById("loader");
 const yesScreen=document.getElementById("yesScreen");
 const sound=document.getElementById("sound");
+const meme=document.getElementById("wowMeme");
 
-/* No escape */
+/* NO button escape */
 function moveNo(){
   noBtn.style.transform=
 `translate(${Math.random()*220-110}px,${Math.random()*80}px)`;
@@ -154,19 +175,21 @@ function moveNo(){
 noBtn.onmouseover=moveNo;
 noBtn.ontouchstart=moveNo;
 
-/* Yes flow */
+/* YES click flow */
 yesBtn.onclick=()=>{
   card.style.display="none";
   loader.style.display="block";
+
   setTimeout(()=>{
     loader.style.display="none";
     yesScreen.style.display="block";
+    meme.style.display="block";   // 👈 SHOW WOW MEME
     sound.play();
     confetti();
   },2000);
 };
 
-/* Hearts start */
+/* Floating hearts (start page) */
 setInterval(()=>{
   const h=document.createElement("div");
   h.className="heart";
@@ -176,7 +199,7 @@ setInterval(()=>{
   setTimeout(()=>h.remove(),6000);
 },300);
 
-/* Confetti */
+/* Confetti (final page) */
 function confetti(){
   setInterval(()=>{
     const c=document.createElement("div");
@@ -201,4 +224,5 @@ function share(){
 
 </body>
 </html>
+
 
